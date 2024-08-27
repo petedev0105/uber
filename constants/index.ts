@@ -31,6 +31,7 @@ import onboarding1 from "@/assets/images/onboarding1.png";
 import onboarding2 from "@/assets/images/onboarding2.png";
 import onboarding3 from "@/assets/images/onboarding3.png";
 import signUpCar from "@/assets/images/signup-car.png";
+import auralogo from "@/assets/images/logo.png";
 
 export const images = {
   onboarding1,
@@ -41,6 +42,7 @@ export const images = {
   check,
   noResult,
   message,
+  auralogo,
 };
 
 export const icons = {
@@ -74,23 +76,22 @@ export const icons = {
 export const onboarding = [
   {
     id: 1,
-    title: "The perfect ride is just a tap away!",
-    description:
-      "Your journey begins with Ryde. Find your ideal ride effortlessly.",
+    title: "Welcome to Aura AI",
+    description: "Level up your vibe, boost your rizz, and glow up!",
     image: images.onboarding1,
   },
   {
     id: 2,
-    title: "Best car in your hands with Ryde",
+    title: "Elevate Your Aura",
     description:
-      "Discover the convenience of finding your perfect ride with Ryde",
+      "Aura AI helps you enhance your personal energy, social magnetism, and overall appearance through tailored challenges and insights.",
     image: images.onboarding2,
   },
   {
     id: 3,
-    title: "Your ride, your way. Let's go!",
+    title: "Unlock Your Full Potential",
     description:
-      "Enter your destination, sit back, and let us take care of the rest.",
+      "🔢 Track energy score\n🏋️ Complete daily challenges\n😎 Boost charisma\n✨ Enhance appearance",
     image: images.onboarding3,
   },
 ];

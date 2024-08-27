@@ -17,6 +17,7 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+      {/* <Stack.Screen name="(chatbot)/[name]" options={{ headerShown: false }} /> */}
     </Stack>
   );
 };

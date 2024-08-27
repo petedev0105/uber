@@ -3,21 +3,37 @@ import { useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import OnboardingQuestions from "@/components/OnboardingQuestions";
 
 import CustomButton from "@/components/CustomButton";
 import { onboarding } from "@/constants";
 
 const Home = () => {
-  const swiperRef = useRef<Swiper>(null);
+  const swiperRef = useRef();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [showQuestions, setShowQuestions] = useState(false);
 
   const isLastSlide = activeIndex === onboarding.length - 1;
+
+  const handleOnboardingComplete = () => {
+    setShowQuestions(true);
+  };
+
+  const handleQuestionsComplete = (responses) => {
+    console.log("User responses:", responses);
+    // Here you can handle the responses, e.g., send them to your backend
+    router.replace("/(auth)/sign-up");
+  };
+
+  if (showQuestions) {
+    return <OnboardingQuestions onComplete={handleQuestionsComplete} />;
+  }
 
   return (
     <SafeAreaView className="flex h-full items-center justify-between bg-white">
       <TouchableOpacity
         onPress={() => {
-          router.replace("/(auth)/sign-up");
+          handleOnboardingComplete();
         }}
         className="w-full flex justify-end items-end p-5"
       >
@@ -28,7 +44,7 @@ const Home = () => {
         ref={swiperRef}
         loop={false}
         dot={
-          <View className="w-[32px] h-[4px] mx-1 bg-[#E2E8F0] rounded-full" />
+          <View className="w-[32px] h-[4px] mx-1 bg-[#E2E8F0] rounded-full " />
         }
         activeDot={
           <View className="w-[32px] h-[4px] mx-1 bg-[#0286FF] rounded-full" />
@@ -39,7 +55,7 @@ const Home = () => {
           <View key={item.id} className="flex items-center justify-center p-5">
             <Image
               source={item.image}
-              className="w-full h-[300px]"
+              className="w-full h-[200px]"
               resizeMode="contain"
             />
             <View className="flex flex-row items-center justify-center w-full mt-10">
@@ -58,7 +74,7 @@ const Home = () => {
         title={isLastSlide ? "Get Started" : "Next"}
         onPress={() =>
           isLastSlide
-            ? router.replace("/(auth)/sign-up")
+            ? handleOnboardingComplete()
             : swiperRef.current?.scrollBy(1)
         }
         className="w-11/12 mt-10 mb-5"

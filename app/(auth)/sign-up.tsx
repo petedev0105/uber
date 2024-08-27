@@ -91,13 +91,13 @@ const SignUp = () => {
           </Text>
         </View>
         <View className="p-5">
-          <InputField
+          {/* <InputField
             label="Name"
             placeholder="Enter name"
             icon={icons.person}
             value={form.name}
             onChangeText={(value) => setForm({ ...form, name: value })}
-          />
+          /> */}
           <InputField
             label="Email"
             placeholder="Enter email"

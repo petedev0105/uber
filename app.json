@@ -13,7 +13,8 @@
       "backgroundColor": "#2F80ED"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.supitspete.uber"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,6 +32,12 @@
         "expo-router",
         {
           "origin": "https://uber.dev/"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
     ],
