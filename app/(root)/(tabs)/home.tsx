@@ -57,7 +57,8 @@ const Home = () => {
           <Image
             source={images.auralogo}
             resizeMode="contain"
-            className="w-35 h-35"
+            style={{ width: 35, height: 35 }}
+            className="my-5"
           />
         </View>
         <View className="flex flex-col items-center justify-center mb-5">
