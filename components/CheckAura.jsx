@@ -14,7 +14,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Alert } from "react-native";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "expo-image-picker";
 
 const CheckAura = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -49,45 +49,46 @@ const CheckAura = () => {
   };
 
   const handleCameraCapture = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera is required!");
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      const compressedUri = await compressImage(result.assets[0].uri);
-      const base64 = await FileSystem.readAsStringAsync(compressedUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setImage(`data:image/jpeg;base64,${base64}`);
-    }
+    // const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    // if (permissionResult.granted === false) {
+    //   alert("Permission to access camera is required!");
+    //   return;
+    // }
+    // // const result = await ImagePicker.launchCameraAsync({
+    // //   allowsEditing: true,
+    // //   aspect: [4, 3],
+    // //   quality: 1,
+    // // });
+    // const result = null;
+    // if (!result.canceled) {
+    //   const compressedUri = await compressImage(result.assets[0].uri);
+    //   const base64 = await FileSystem.readAsStringAsync(compressedUri, {
+    //     encoding: FileSystem.EncodingType.Base64,
+    //   });
+    //   setImage(`data:image/jpeg;base64,${base64}`);
+    // }
   };
 
   const handleGalleryUpload = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      const compressedUri = await compressImage(result.assets[0].uri);
-      const base64 = await FileSystem.readAsStringAsync(compressedUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setImage(`data:image/jpeg;base64,${base64}`);
-    }
+    // const permissionResult =
+    //   await ImagePicker.requestMediaLibraryPermissionsAsync();
+    // if (permissionResult.granted === false) {
+    //   alert("Permission to access camera roll is required!");
+    //   return;
+    // }
+    // const result = await ImagePicker.launchImageLibraryAsync({
+    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //   allowsEditing: true,
+    //   aspect: [4, 3],
+    //   quality: 1,
+    // });
+    // if (!result.canceled) {
+    //   const compressedUri = await compressImage(result.assets[0].uri);
+    //   const base64 = await FileSystem.readAsStringAsync(compressedUri, {
+    //     encoding: FileSystem.EncodingType.Base64,
+    //   });
+    //   setImage(`data:image/jpeg;base64,${base64}`);
+    // }
   };
 
   const handleImageUpload = () => {
