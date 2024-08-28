@@ -12,5 +12,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "app/(auth)/welcome.jsx"
-  ]
+, "app/(root)/(tabs)/chat.jsx", "app/(root)/(tabs)/rides.jsx"  ]
 }

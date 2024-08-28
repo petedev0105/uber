@@ -33,15 +33,75 @@ const questions = [
     description: "Select up to 2",
     options: [
       "Boost my overall aura",
-      "Level up my rizz game",
-      "Enhance my appearance",
-      "Increase my confidence",
+      "Level up my communication",
+      "Enhance my style",
+      "Increase my mindfulness",
     ],
     multiSelect: true,
     maxSelect: 2,
   },
   {
+    id: 3,
+    title: "How confident do you feel about your posture in social situations?",
+    options: [
+      "Very confident, I stand tall",
+      "Somewhat confident, but I could improve",
+      "Not very confident, I slouch often",
+      "I don't pay attention to my posture",
+    ],
+  },
+  {
     id: 4,
+    title: "How often do you practice mindfulness or meditation?",
+    options: [
+      "Daily, it's part of my routine",
+      "A few times a week",
+      "Occasionally, when I remember",
+      "Rarely, I find it challenging",
+    ],
+  },
+  {
+    id: 5,
+    title: "How would you rate your communication skills?",
+    options: [
+      "Excellent, I can engage anyone",
+      "Good, but I have room for improvement",
+      "Fair, I struggle sometimes",
+      "Poor, I find it challenging",
+    ],
+  },
+  {
+    id: 6,
+    title: "How important is personal style in expressing your aura?",
+    options: [
+      "Very important, it defines me",
+      "Somewhat important, I care about it",
+      "Not very important, I dress for comfort",
+      "Not important at all, I don't think about it",
+    ],
+  },
+  {
+    id: 7,
+    title: "How regularly do you engage in wellness activities?",
+    options: [
+      "Daily, it's a priority",
+      "A few times a week",
+      "Occasionally, when I remember",
+      "Rarely, I often forget",
+    ],
+  },
+  {
+    id: 8,
+    title: "How often do you express your creativity in your daily life?",
+    options: [
+      "Daily, it's essential for me",
+      "A few times a week",
+      "Occasionally, when I feel inspired",
+      "Rarely, I don't prioritize it",
+    ],
+  },
+  {
+    id: 9,
     title: "What's your typical day like?",
     description: "Select all that apply",
     options: [
@@ -49,26 +109,12 @@ const questions = [
       "Hitting the gym",
       "Hanging with friends",
       "Creative pursuits",
-      "Social media scrolling",
+      "Mindfulness practices",
     ],
     multiSelect: true,
   },
   {
-    id: 5,
-    title: "How do you want to level up?",
-    description: "Select up to 3",
-    options: [
-      "Quick daily tasks",
-      "Social challenges",
-      "Self-care routines",
-      "Style and appearance tips",
-      "Confidence boosters",
-    ],
-    multiSelect: true,
-    maxSelect: 3,
-  },
-  {
-    id: 6,
+    id: 10,
     title: "How much time can you dedicate to improving your aura daily?",
     options: [
       "5-10 minutes",
@@ -78,7 +124,17 @@ const questions = [
     ],
   },
   {
-    id: 3,
+    id: 11,
+    title: "What motivates you to improve your aura?",
+    options: [
+      "Desire for personal growth",
+      "Wanting to connect with others",
+      "Seeking new opportunities",
+      "Curiosity about self-improvement",
+    ],
+  },
+  {
+    id: 12,
     title: "Let's personalize your journey",
     inputs: [
       {
@@ -95,20 +151,20 @@ const questions = [
     ],
   },
   {
-    id: 8,
+    id: 13,
     title: "Personalizing Your Experience",
     loading: true,
     duration: 3000,
     loadingMessage: "Please wait while we personalize the app for you...",
   },
   {
-    id: 9,
+    id: 14,
     title: "Congratulations!",
     description: "Your app is ready.",
     finalScreen: true,
   },
   {
-    id: 7,
+    id: 15,
     title: "Unlock Premium Features",
     description: "Get access to personalized aura insights and advanced tools",
     options: [
@@ -134,80 +190,54 @@ const OnboardingQuestions = ({ onComplete }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showDiscountModal, setShowDiscountModal] = useState(false);
   const [showDiscountedPaywall, setShowDiscountedPaywall] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  useEffect(() => {
-    const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion.loading) {
-      const timer = setTimeout(() => {
-        handleNext();
-      }, currentQuestion.duration);
-      return () => clearTimeout(timer);
-    }
-  }, [currentQuestionIndex]);
+  async function analyzeUserData() {
+    setIsAnalyzing(true);
+    try {
+      const payload = {
+        userResponses: userResponses,
+      };
 
-  const handleOptionSelect = (questionId, option) => {
-    const currentQuestion = questions[currentQuestionIndex];
-    setUserResponses((prevResponses) => {
-      const currentSelections = prevResponses[questionId] || [];
-      let updatedSelections;
+      console.log("Analyzing user data...", payload);
 
-      if (currentQuestion.multiSelect) {
-        updatedSelections = currentSelections.includes(option)
-          ? currentSelections.filter((item) => item !== option)
-          : [...currentSelections, option];
+      const response = await fetch("/(api)/(openai)/analyze-user-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-        if (
-          currentQuestion.maxSelect &&
-          updatedSelections.length > currentQuestion.maxSelect
-        ) {
-          return prevResponses;
-        }
-      } else {
-        updatedSelections = [option];
+      if (!response.ok) {
+        throw new Error("Failed to analyze user data");
       }
 
-      console.log(`Question ${questionId} answered:`, updatedSelections);
-      return {
-        ...prevResponses,
-        [questionId]: updatedSelections,
-      };
-    });
-  };
+      const result = await response.json();
+      console.log("API response:", result);
 
-  const handleInputChange = (questionId, inputLabel, value) => {
-    setUserResponses((prevResponses) => {
-      const updatedResponse = {
-        ...prevResponses,
-        [questionId]: {
-          ...(prevResponses[questionId] || {}),
-          [inputLabel]: value,
-        },
-      };
-      console.log(
-        `Question ${questionId} input changed:`,
-        updatedResponse[questionId]
+      // You can store the analysis result in the state if needed
+      // setAnalysisResult(result.analysis);
+
+      // Move to the loading question (id 13)
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+
+      // Simulate the loading duration
+      await new Promise((resolve) =>
+        setTimeout(resolve, questions[currentQuestionIndex + 1].duration)
       );
-      return updatedResponse;
-    });
-  };
 
-  const isCurrentQuestionAnswered = () => {
-    const currentQuestion = questions[currentQuestionIndex];
-    const response = userResponses[currentQuestion.id];
-
-    if (currentQuestion.options) {
-      return response && response.length > 0;
-    } else if (currentQuestion.inputs) {
-      return (
-        response &&
-        Object.keys(response).length === currentQuestion.inputs.length &&
-        Object.values(response).every((value) => value.trim() !== "")
-      );
+      // Move to the next question after the loading duration
+      setCurrentQuestionIndex(currentQuestionIndex + 2);
+    } catch (error) {
+      console.error("Error analyzing user data:", error);
+      setError("Failed to analyze user data. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
     }
-    return true; // For loading and final screens, consider them always answered
-  };
+  }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     console.log("Current question index:", currentQuestionIndex);
     console.log("Is answered:", isCurrentQuestionAnswered());
     console.log("Current user responses:", userResponses);
@@ -215,8 +245,11 @@ const OnboardingQuestions = ({ onComplete }) => {
     if (isCurrentQuestionAnswered()) {
       setError("");
       if (currentQuestionIndex < questions.length - 1) {
-        if (currentQuestion.paywall) {
-          console.log("Selected plan:", userResponses[currentQuestion.id]);
+        if (currentQuestion.id === 12) {
+          // Run the analyze user data API for question 12
+          await analyzeUserData();
+        } else if (currentQuestion.paywall) {
+          console.log("Selected plan:", userResponses[currentQuestion.title]);
           if (!showDiscountedPaywall) {
             setShowDiscountModal(true);
           } else {
@@ -234,6 +267,68 @@ const OnboardingQuestions = ({ onComplete }) => {
     }
   };
 
+  const handleOptionSelect = (questionTitle, option) => {
+    const currentQuestion = questions[currentQuestionIndex];
+    setUserResponses((prevResponses) => {
+      const currentSelections = prevResponses[questionTitle] || [];
+      let updatedSelections;
+
+      if (currentQuestion.multiSelect) {
+        updatedSelections = currentSelections.includes(option)
+          ? currentSelections.filter((item) => item !== option)
+          : [...currentSelections, option];
+
+        if (
+          currentQuestion.maxSelect &&
+          updatedSelections.length > currentQuestion.maxSelect
+        ) {
+          return prevResponses;
+        }
+      } else {
+        updatedSelections = [option];
+      }
+
+      console.log(`Question "${questionTitle}" answered:`, updatedSelections);
+      return {
+        ...prevResponses,
+        [questionTitle]: updatedSelections,
+      };
+    });
+  };
+
+  const handleInputChange = (questionTitle, inputLabel, value) => {
+    setUserResponses((prevResponses) => {
+      const updatedResponse = {
+        ...prevResponses,
+        [questionTitle]: {
+          ...(prevResponses[questionTitle] || {}),
+          [inputLabel]: value,
+        },
+      };
+      console.log(
+        `Question "${questionTitle}" input changed:`,
+        updatedResponse[questionTitle]
+      );
+      return updatedResponse;
+    });
+  };
+
+  const isCurrentQuestionAnswered = () => {
+    const currentQuestion = questions[currentQuestionIndex];
+    const response = userResponses[currentQuestion.title];
+
+    if (currentQuestion.options) {
+      return response && response.length > 0;
+    } else if (currentQuestion.inputs) {
+      return (
+        response &&
+        Object.keys(response).length === currentQuestion.inputs.length &&
+        Object.values(response).every((value) => value.trim() !== "")
+      );
+    }
+    return true; // For loading and final screens, consider them always answered
+  };
+
   const handleClaimGift = () => {
     setShowDiscountModal(false);
     setShowDiscountedPaywall(true);
@@ -243,18 +338,19 @@ const OnboardingQuestions = ({ onComplete }) => {
     setSelectedPlan(plan);
     setUserResponses((prev) => ({
       ...prev,
-      [questions[currentQuestionIndex].id]: plan,
+      [questions[currentQuestionIndex].title]: plan,
     }));
   };
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  if (currentQuestion.loading) {
+  if (isAnalyzing || (currentQuestion.loading && !isAnalyzing)) {
     return (
       <SafeAreaView className="flex-1 bg-white justify-center items-center">
         <ActivityIndicator size="large" color="#0000ff" />
         <Text className="text-lg font-JakartaMedium mt-4 text-center px-5">
-          {currentQuestion.loadingMessage}
+          {currentQuestion.loadingMessage ||
+            "Please wait while we personalize the app for you..."}
         </Text>
       </SafeAreaView>
     );
@@ -332,6 +428,7 @@ const OnboardingQuestions = ({ onComplete }) => {
             <CustomButton
               title="Continue"
               onPress={() => router.replace("sign-in")}
+              // onPress={() => handleFinish()}
               className="w-full mb-4"
               disabled={!selectedPlan}
             />
@@ -379,9 +476,11 @@ const OnboardingQuestions = ({ onComplete }) => {
             {currentQuestion.options.map((option) => (
               <TouchableOpacity
                 key={option}
-                onPress={() => handleOptionSelect(currentQuestion.id, option)}
+                onPress={() =>
+                  handleOptionSelect(currentQuestion.title, option)
+                }
                 className={`w-full bg-[#E2E8F0] rounded-full p-3 mb-3 ${
-                  (userResponses[currentQuestion.id] || []).includes(option)
+                  (userResponses[currentQuestion.title] || []).includes(option)
                     ? "bg-primary-500"
                     : ""
                 }`}
@@ -400,9 +499,11 @@ const OnboardingQuestions = ({ onComplete }) => {
                 label={input.label}
                 placeholder={input.placeholder}
                 icon={icons[input.icon]}
-                value={userResponses[currentQuestion.id]?.[input.label] || ""}
+                value={
+                  userResponses[currentQuestion.title]?.[input.label] || ""
+                }
                 onChangeText={(value) =>
-                  handleInputChange(currentQuestion.id, input.label, value)
+                  handleInputChange(currentQuestion.title, input.label, value)
                 }
               />
             ))}
