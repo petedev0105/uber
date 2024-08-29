@@ -38,23 +38,30 @@ const Chat = () => {
   return (
     <SafeAreaView className="flex-1 bg-white p-5">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Text className="text-2xl font-JakartaBold mb-5">
-          Life Improvement AI
-        </Text>
+        <Text className="text-2xl font-JakartaBold mb-5">Improve</Text>
 
         <View className="mb-8">
           <Text className="text-xl font-JakartaBold mb-3">AI Assistants</Text>
           {chatbots.map((bot, index) => (
             <TouchableOpacity
               key={index}
-              className="flex-row items-center py-3 border-b border-gray-200"
+              className="flex-row items-center justify-between py-3 border-b border-gray-200"
               onPress={() => router.push(`/(root)/(tabs)/chat/${bot.name}`)}
             >
-              <Ionicons name={bot.icon} size={24} color="#4B5563" />
-              <View className="ml-3">
-                <Text className="text-base font-JakartaMedium">{bot.name}</Text>
-                <Text className="text-sm text-gray-500">{bot.description}</Text>
+              <View className="flex-row items-center">
+                <Ionicons name={bot.icon} size={24} color="#4B5563" />
+                <View className="ml-3">
+                  <Text className="text-base font-JakartaMedium">
+                    {bot.name}
+                  </Text>
+                  <Text className="text-sm text-gray-500">
+                    {bot.description.length > 30
+                      ? `${bot.description.substring(0, 30)}...`
+                      : bot.description}
+                  </Text>
+                </View>
               </View>
+              <Ionicons name="chevron-forward" size={24} color="#4B5563" />
             </TouchableOpacity>
           ))}
         </View>

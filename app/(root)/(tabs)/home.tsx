@@ -14,7 +14,7 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { fetchAPI } from "@/lib/fetch";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
 import RideCard from "@/components/RideCard";
@@ -26,10 +26,14 @@ import CheckAura from "../../../components/CheckAura";
 import AuraTasks from "../../../components/AuraTasks";
 import AuraStats from "../../../components/AuraStats";
 import DailyAuraTasks from "@/components/DailyAuraTasks";
+import { useAuraTasksStore } from "@/store/auraTasksStore";
 
 const Home = () => {
   const { user } = useUser();
   const { signOut } = useAuth();
+  const [totalPoints, setTotalPoints] = useState(0);
+  const { tasks, setTasks } = useAuraTasksStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   // const { setUserLocation, setDestinationLocation } = useLocationStore();
 
@@ -50,6 +54,30 @@ const Home = () => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [isSignOutModalVisible, setIsSignOutModalVisible] = useState(false);
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (!user) return;
+      try {
+        const response = await fetch(`/(api)/get-tasks/${user.id}`);
+        const data = await response.json();
+        const incompleteTasks = data.data.filter(
+          (task: { is_completed: boolean }) => !task.is_completed
+        );
+        setTasks(incompleteTasks); // Get only the first 5 incomplete tasks
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, [user]);
+
+  if (isLoading) {
+    return <Text>Loading tasks...</Text>;
+  }
+
   return (
     <SafeAreaView className="bg-general-500 h-full">
       <ScrollView className="">
@@ -67,7 +95,7 @@ const Home = () => {
           </Text>
         </View>
 
-        <AuraStats totalPoints={1250} streak={7} />
+        <AuraStats />
 
         <CheckAura />
 

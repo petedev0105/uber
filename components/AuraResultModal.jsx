@@ -159,7 +159,7 @@ const AuraResultModal = ({ isVisible, onClose, result }) => {
           <View className="items-center mb-5">
             <Image
               source={images.auralogo}
-              style={{ width: 80, height: 80, borderRadius: 40 }}
+              style={{ width: 80, height: 80 }}
               className="mb-4"
             />
             <Text className="text-gray-800 text-2xl font-bold text-center mb-2">
@@ -196,7 +196,7 @@ const AuraResultModal = ({ isVisible, onClose, result }) => {
             Aura Breakdown
           </Text>
 
-          <View className="flex-row flex-wrap mb-24">
+          <View className="flex-row flex-wrap ">
             {(result.aura_categories || []).map((category, index) => (
               <View key={index} className="w-1/2 p-1">
                 <View className="relative overflow-hidden">
@@ -209,6 +209,20 @@ const AuraResultModal = ({ isVisible, onClose, result }) => {
                 </View>
               </View>
             ))}
+          </View>
+
+          <View className="mb-24 mt-5 flex-1">
+            <TouchableOpacity>
+              <LinearGradient
+                colors={["#3B82F6", "#2563EB", "#1D4ED8"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                className="rounded-full py-3 px-6 shadow-lg flex-row items-center justify-center"
+              >
+                <Text className="text-white font-bold mr-2">Record Score</Text>
+                <Ionicons name="arrow-forward" size={16} color="white" />
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
 
           {/* Safeguard: Show a message if aura_categories is empty */}

@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { useUser } from "@clerk/clerk-expo";
+import { Modal } from "react-native";
 import { fetchAPI } from "@/lib/fetch";
+import { useAuraTasksStore } from "@/store/auraTasksStore"; // Import the aura tasks store
+import AuraTaskModal from "./AuraTaskModal"; // Import AuraTaskModal
 
 const TaskCard = ({ task, onPress }) => {
   const getCategoryColor = (category) => {
@@ -38,7 +47,7 @@ const TaskCard = ({ task, onPress }) => {
         </View>
       </View>
       <Text className="text-gray-800 text-lg font-bold mb-2" numberOfLines={1}>
-        {task.name}
+        {task.title}
       </Text>
       <Text className="text-gray-600 text-sm mb-2" numberOfLines={2}>
         {task.description || "No description available"}
@@ -50,119 +59,55 @@ const TaskCard = ({ task, onPress }) => {
   );
 };
 
-const TaskModal = ({ task, visible, onClose, onMarkAsDone }) => {
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <TouchableOpacity
-        style={{
-          flex: 1,
-          justifyContent: "flex-end",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        }}
-        activeOpacity={1}
-        onPress={onClose}
-      >
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <View className="bg-white p-6 rounded-t-3xl">
-            <Text className="text-black text-2xl font-bold mb-2">
-              {task.name}
-            </Text>
-            <Text className="text-blue-500 font-bold mb-4 text-lg">
-              +{task.points} Aura Points
-            </Text>
-            <Text className="text-black text-lg mb-4">{task.description}</Text>
-            <Text className="text-black text-xl font-bold mb-2">
-              Tips & Tricks:
-            </Text>
-            <Text className="text-black text-base mb-6">{task.tips}</Text>
-            <Text className="text-black text-lg font-bold mb-2">
-              Difficulty:
-            </Text>
-            <Text className="text-black text-base mb-4">{task.difficulty}</Text>
-            <Text className="text-black text-lg font-bold mb-2">Category:</Text>
-            <Text className="text-black text-base mb-6">{task.category}</Text>
-            <View className="flex-row items-center justify-between mb-6">
-              <Text className="text-black text-lg font-bold">
-                Mark as done:
-              </Text>
-              {!showConfirm ? (
-                <TouchableOpacity
-                  onPress={() => setShowConfirm(true)}
-                  className="w-6 h-6 border-2 border-blue-500 rounded-md flex items-center justify-center"
-                >
-                  {task.isDone && (
-                    <Ionicons name="checkmark" size={18} color="#3B82F6" />
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={onMarkAsDone}
-                  className="bg-blue-500 py-2 px-4 rounded-full"
-                >
-                  <Text className="text-white font-bold">Confirm</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-            <TouchableOpacity
-              className="bg-blue-500 py-3 px-6 rounded-full"
-              onPress={onClose}
-            >
-              <Text className="text-white text-center font-bold">Close</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Modal>
-  );
-};
-
 const AuraTasks = () => {
   const { user } = useUser();
-  const [tasks, setTasks] = useState([]);
+  const { tasks, setTasks } = useAuraTasksStore(); // Use the global state
   const [selectedTask, setSelectedTask] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const confettiRef = useRef(null);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      fetchTasks();
-    }
-  }, [user]);
-
-  const fetchTasks = async () => {
-    try {
-      const response = await fetchAPI(`/(api)/get-tasks/${user.id}`);
-      if (response.data) {
-        setTasks(response.data);
+    const fetchTasks = async () => {
+      if (!user) return;
+      setIsLoading(true); // Set loading state to true
+      try {
+        const response = await fetchAPI(`/(api)/get-tasks/${user.id}`);
+        const completedTasks = response.data.filter(
+          (task) => !task.is_completed // Filter tasks where is_completed is false
+        );
+        setTasks(completedTasks); // Update global state with fetched completed tasks
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      } finally {
+        setIsLoading(false); // Set loading state to false
       }
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
+    };
+
+    fetchTasks();
+  }, [user]);
 
   const handleMarkAsDone = async (taskId) => {
     try {
-      await fetchAPI(`/(api)/complete-task/${taskId}`, {
+      console.log("calling update task api...");
+      const updatedTasks = tasks.map((task) =>
+        task.id === taskId ? { ...task, is_completed: true } : task
+      );
+      setTasks(updatedTasks);
+
+      await fetchAPI(`/(api)/update-tasks/${user.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ is_completed: true }),
+        body: JSON.stringify({ tasks: updatedTasks }),
       });
-      await fetchTasks(); // Refetch tasks to update the list
+
       setSelectedTask(null);
       setShowConfetti(true);
       setTimeout(() => {
         setShowConfetti(false);
       }, 3000);
+
+      console.log("update task api called successful!");
     } catch (error) {
       console.error("Error marking task as done:", error);
     }
@@ -180,20 +125,20 @@ const AuraTasks = () => {
   // Get unique categories from all tasks
   const categories = ["All", ...new Set(tasks.map((task) => task.category))];
 
-  return (
-    <View>
-      <View className="mb-6">
-        <Text className="text-xl font-bold mb-2">Your Progress</Text>
-        <View className="bg-gray-200 h-4 rounded-full">
-          <View
-            className="bg-blue-500 h-full rounded-full"
-            style={{ width: `${(tasks.length / allTasks.length) * 100}%` }}
-          />
+  if (isLoading) {
+    return (
+      <View className="flex-1 ">
+        <SkeletonLoader />
+        <View className="flex-row justify-center items-center mt-4">
+          <ActivityIndicator size="large" color="#3B82F6" />
+          <Text className="ml-2 text-gray-600">Loading tasks...</Text>
         </View>
-        <Text className="text-sm text-gray-600 mt-2">
-          {tasks.length} / {allTasks.length} tasks completed
-        </Text>
       </View>
+    );
+  }
+
+  return (
+    <View className="mb-24">
       <ScrollView className="flex-1">
         <ScrollView
           horizontal
@@ -220,43 +165,42 @@ const AuraTasks = () => {
         </ScrollView>
 
         <Text className="text-xl font-bold mb-4 mt-5">Tasks</Text>
-        {filteredTasks.map((item) => (
-          <TaskCard
-            key={item.id.toString()}
-            task={{
-              ...item,
-              name:
-                item.name.length > 30
-                  ? item.name.substring(0, 30) + "..."
-                  : item.name,
-              description:
-                item.description.length > 70
-                  ? item.description.substring(0, 70) + "..."
-                  : item.description,
-            }}
-            onPress={() => setSelectedTask(item)}
-            className="mb-4 border border-gray-300"
-          />
-        ))}
+        {Array.isArray(filteredTasks) && // Use filteredTasks instead of tasks
+          filteredTasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onPress={() => setSelectedTask(task)}
+            />
+          ))}
       </ScrollView>
       {selectedTask && (
-        <TaskModal
+        <AuraTaskModal
           task={selectedTask}
           visible={!!selectedTask}
           onClose={() => setSelectedTask(null)}
-          onMarkAsDone={() => handleMarkAsDone(selectedTask.id)}
+          onMarkAsDone={() => handleMarkAsDone(selectedTask.id)} // Implement this function as needed
         />
       )}
-      {showConfetti && (
+      {/* {showConfetti && (
         <ConfettiCannon
           count={200}
           origin={{ x: -10, y: 0 }}
           autoStart={true}
           ref={confettiRef}
         />
-      )}
+      )} */}
     </View>
   );
 };
+
+const SkeletonLoader = () => (
+  <View className="mb-4">
+    <View className="bg-gray-200 h-6 w-3/4 rounded-full mb-2" />
+    <View className="bg-gray-200 h-24 w-full rounded-2xl mb-2" />
+    <View className="bg-gray-200 h-24 w-full rounded-2xl mb-2" />
+    <View className="bg-gray-200 h-24 w-full rounded-2xl" />
+  </View>
+);
 
 export default AuraTasks;

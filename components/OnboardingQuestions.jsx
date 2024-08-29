@@ -18,158 +18,144 @@ import { useRouter } from "expo-router";
 const questions = [
   {
     id: 1,
-    title: "Let's check your current vibe",
-    description: "How would you rate your overall energy today?",
-    options: [
-      "Low key struggling",
-      "Meh, could be better",
-      "Pretty good",
-      "Absolutely glowing",
-    ],
+    title:
+      "What's the first word that comes to mind when you think about your day ahead?",
+    options: ["Exciting", "Challenging", "Peaceful", "Productive", "Uncertain"],
   },
   {
     id: 2,
-    title: "What's your main glow-up goal?",
-    description: "Select up to 2",
+    title: "How do you typically recharge your energy?",
     options: [
-      "Boost my overall aura",
-      "Level up my communication",
-      "Enhance my style",
-      "Increase my mindfulness",
+      "Physical activity or exercise",
+      "Quiet time alone",
+      "Socializing with friends",
+      "Creative pursuits",
+      "Connecting with nature",
     ],
-    multiSelect: true,
-    maxSelect: 2,
   },
   {
     id: 3,
-    title: "How confident do you feel about your posture in social situations?",
+    title: "In social situations, you tend to be:",
     options: [
-      "Very confident, I stand tall",
-      "Somewhat confident, but I could improve",
-      "Not very confident, I slouch often",
-      "I don't pay attention to my posture",
+      "The life of the party",
+      "A calm and steady presence",
+      "An empathetic listener",
+      "A thoughtful observer",
+      "An inspiring motivator",
     ],
   },
   {
     id: 4,
-    title: "How often do you practice mindfulness or meditation?",
+    title: "Which element do you feel most connected to?",
     options: [
-      "Daily, it's part of my routine",
-      "A few times a week",
-      "Occasionally, when I remember",
-      "Rarely, I find it challenging",
+      "Fire - passionate and energetic",
+      "Water - emotional and intuitive",
+      "Air - intellectual and communicative",
+      "Earth - practical and grounded",
+      "Spirit - mystical and insightful",
     ],
   },
   {
     id: 5,
-    title: "How would you rate your communication skills?",
+    title: "How do you usually approach challenges?",
     options: [
-      "Excellent, I can engage anyone",
-      "Good, but I have room for improvement",
-      "Fair, I struggle sometimes",
-      "Poor, I find it challenging",
+      "Head-on with confidence",
+      "Carefully with thorough planning",
+      "Collaboratively with others",
+      "Creatively with unique solutions",
+      "Intuitively based on feelings",
     ],
   },
   {
     id: 6,
-    title: "How important is personal style in expressing your aura?",
+    title: "Which statement resonates with you most?",
     options: [
-      "Very important, it defines me",
-      "Somewhat important, I care about it",
-      "Not very important, I dress for comfort",
-      "Not important at all, I don't think about it",
+      "I'm always seeking new experiences",
+      "I value harmony and balance in life",
+      "I'm driven by helping others",
+      "I'm constantly curious and learning",
+      "I'm deeply connected to my inner wisdom",
     ],
   },
   {
     id: 7,
-    title: "How regularly do you engage in wellness activities?",
+    title: "How do others often describe your presence?",
     options: [
-      "Daily, it's a priority",
-      "A few times a week",
-      "Occasionally, when I remember",
-      "Rarely, I often forget",
+      "Energizing and motivating",
+      "Calming and soothing",
+      "Warm and nurturing",
+      "Inspiring and visionary",
+      "Grounding and stabilizing",
     ],
   },
   {
     id: 8,
-    title: "How often do you express your creativity in your daily life?",
+    title: "What's your primary goal for personal growth?",
     options: [
-      "Daily, it's essential for me",
-      "A few times a week",
-      "Occasionally, when I feel inspired",
-      "Rarely, I don't prioritize it",
+      "Boosting confidence and assertiveness",
+      "Finding inner peace and balance",
+      "Improving relationships and empathy",
+      "Expanding knowledge and wisdom",
+      "Deepening spiritual connection",
     ],
   },
   {
     id: 9,
-    title: "What's your typical day like?",
-    description: "Select all that apply",
+    title: "In decision-making, you typically rely on:",
     options: [
-      "School/Work grind",
-      "Hitting the gym",
-      "Hanging with friends",
-      "Creative pursuits",
-      "Mindfulness practices",
+      "Gut instincts and quick action",
+      "Logical analysis and facts",
+      "Considering others' feelings",
+      "Creative problem-solving",
+      "Intuition and inner guidance",
     ],
-    multiSelect: true,
   },
   {
     id: 10,
-    title: "How much time can you dedicate to improving your aura daily?",
+    title: "Which area of personal development interests you most?",
     options: [
-      "5-10 minutes",
-      "15-30 minutes",
-      "30-60 minutes",
-      "I'm all in, fam!",
+      "Physical vitality and strength",
+      "Emotional intelligence and balance",
+      "Social skills and charisma",
+      "Mental acuity and knowledge",
+      "Spiritual growth and awareness",
     ],
   },
   {
     id: 11,
-    title: "What motivates you to improve your aura?",
-    options: [
-      "Desire for personal growth",
-      "Wanting to connect with others",
-      "Seeking new opportunities",
-      "Curiosity about self-improvement",
-    ],
-  },
-  {
-    id: 12,
     title: "Let's personalize your journey",
     inputs: [
       {
         label: "Full Name",
-        placeholder: "Enter your full name",
-        icon: "person",
+        placeholder: "Enter your name...",
+        // icon: "person",
       },
-      { label: "Date of Birth", placeholder: "MM/DD/YYYY", icon: "calendar" },
       {
         label: "Gender (optional)",
-        placeholder: "Enter your gender",
-        icon: "person",
+        placeholder: "Enter your gender...",
+        // icon: "transgender",
       },
     ],
   },
+  // {
+  //   id: 12,
+  //   title: "Discovering Your Aura Type",
+  //   loading: true,
+  //   loadingMessage: "Analyzing your energy patterns...",
+  // },
   {
     id: 13,
-    title: "Personalizing Your Experience",
-    loading: true,
-    duration: 3000,
-    loadingMessage: "Please wait while we personalize the app for you...",
-  },
-  {
-    id: 14,
-    title: "Congratulations!",
-    description: "Your app is ready.",
+    title: "Your Aura Ratings",
+    description: "We've identified your unique aura type.",
     finalScreen: true,
   },
   {
-    id: 15,
-    title: "Unlock Premium Features",
-    description: "Get access to personalized aura insights and advanced tools",
+    id: 14,
+    title: "Unlock Premium Aura Insights",
+    description: "Get in-depth analysis and personalized growth strategies",
     options: [
-      { title: "Weekly", price: "$3.99/week" },
-      { title: "Annually", price: "$39.99/yr", discount: "Save 50%" },
+      { title: "Monthly", price: "$9.99/month" },
+      { title: "Annually", price: "$79.99/year", discount: "Save 33%" },
     ],
     paywall: true,
   },
@@ -182,6 +168,21 @@ const FeatureItem = ({ icon, text }) => (
   </View>
 );
 
+const CustomProgressBar = ({ progress, potentialProgress }) => (
+  <View className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+    <View
+      className="h-full bg-blue-500 rounded-full"
+      style={{ width: `${progress}%` }}
+    />
+    {potentialProgress && (
+      <View
+        className="h-full bg-green-500 rounded-full absolute top-0 left-0 opacity-50"
+        style={{ width: `${potentialProgress}%` }}
+      />
+    )}
+  </View>
+);
+
 const OnboardingQuestions = ({ onComplete }) => {
   const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -191,6 +192,9 @@ const OnboardingQuestions = ({ onComplete }) => {
   const [showDiscountModal, setShowDiscountModal] = useState(false);
   const [showDiscountedPaywall, setShowDiscountedPaywall] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [auraAnalysis, setAuraAnalysis] = useState(null);
+  const [potentialScores, setPotentialScores] = useState(null);
+  const [showPotential, setShowPotential] = useState(false);
 
   async function analyzeUserData() {
     setIsAnalyzing(true);
@@ -216,19 +220,17 @@ const OnboardingQuestions = ({ onComplete }) => {
       const result = await response.json();
       console.log("API response:", result);
 
-      // You can store the analysis result in the state if needed
-      // setAnalysisResult(result.analysis);
+      // Remove the backticks and "json" from the string
+      const cleanedJsonString = result.analysis
+        .replace(/```json|```/g, "")
+        .trim();
 
-      // Move to the loading question (id 13)
+      // Parse the cleaned JSON string
+      const parsedAnalysis = JSON.parse(cleanedJsonString);
+      console.log("Parsed analysis:", parsedAnalysis);
+
+      setAuraAnalysis(parsedAnalysis.analysis);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-
-      // Simulate the loading duration
-      await new Promise((resolve) =>
-        setTimeout(resolve, questions[currentQuestionIndex + 1].duration)
-      );
-
-      // Move to the next question after the loading duration
-      setCurrentQuestionIndex(currentQuestionIndex + 2);
     } catch (error) {
       console.error("Error analyzing user data:", error);
       setError("Failed to analyze user data. Please try again.");
@@ -245,8 +247,9 @@ const OnboardingQuestions = ({ onComplete }) => {
     if (isCurrentQuestionAnswered()) {
       setError("");
       if (currentQuestionIndex < questions.length - 1) {
-        if (currentQuestion.id === 12) {
-          // Run the analyze user data API for question 12
+        if (currentQuestion.id === 11) {
+          // Assuming the personal info question is now 11
+          // Run the analyze user data API for question 11
           await analyzeUserData();
         } else if (currentQuestion.paywall) {
           console.log("Selected plan:", userResponses[currentQuestion.title]);
@@ -342,13 +345,30 @@ const OnboardingQuestions = ({ onComplete }) => {
     }));
   };
 
+  const generatePotentialScores = () => {
+    if (!auraAnalysis) return;
+
+    const newPotentialScores = {};
+    Object.entries(auraAnalysis.categories).forEach(([category, data]) => {
+      const currentScore = data.rating;
+      const maxIncrease = Math.min(98 - currentScore, 20); // Ensure the score doesn't exceed 98
+      const increase = Math.min(
+        Math.max(12, Math.floor(Math.random() * maxIncrease) + 1),
+        98 - currentScore
+      ); // Minimum increase of 12, maximum up to total score of 98
+      newPotentialScores[category] = currentScore + increase;
+    });
+    setPotentialScores(newPotentialScores);
+    setShowPotential(true);
+  };
+
   const currentQuestion = questions[currentQuestionIndex];
 
   if (isAnalyzing || (currentQuestion.loading && !isAnalyzing)) {
     return (
       <SafeAreaView className="flex-1 bg-white justify-center items-center">
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text className="text-lg font-JakartaMedium mt-4 text-center px-5">
+        <Text className="px-16 text-lg font-JakartaMedium mt-4 text-center ">
           {currentQuestion.loadingMessage ||
             "Please wait while we personalize the app for you..."}
         </Text>
@@ -454,6 +474,191 @@ const OnboardingQuestions = ({ onComplete }) => {
             </Modal>
           </View>
         </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  if (currentQuestion.finalScreen && auraAnalysis) {
+    if (showPotential) {
+      return (
+        <SafeAreaView className="flex-1 bg-white">
+          <ScrollView className="flex-1 px-5 py-10">
+            <Text className="text-2xl font-JakartaBold mb-4">
+              Potential Growth After 1 Month
+            </Text>
+            <Text className="text-base font-JakartaRegular mb-6">
+              Here's how your scores could improve with dedicated practice:
+            </Text>
+
+            <View className="flex-row flex-wrap">
+              {Object.entries(auraAnalysis.categories).map(
+                ([category, data], index) => {
+                  let iconName;
+                  switch (category) {
+                    case "posture":
+                      iconName = "body-outline";
+                      break;
+                    case "communication":
+                      iconName = "chatbubbles-outline";
+                      break;
+                    case "style":
+                      iconName = "shirt-outline";
+                      break;
+                    case "wellness":
+                      iconName = "fitness-outline";
+                      break;
+                    case "creativity":
+                      iconName = "color-palette-outline";
+                      break;
+                    default:
+                      iconName = "star-outline";
+                  }
+                  return (
+                    <View key={category} className="w-1/2 p-2">
+                      <View
+                        className="bg-white bg-opacity-50 rounded-lg p-5 shadow-sm"
+                        style={{
+                          backdropFilter: "blur(10px)",
+                          WebkitBackdropFilter: "blur(10px)",
+                        }}
+                      >
+                        <View className="flex-row space-x-3 items-center mb-2">
+                          <Ionicons name={iconName} size={24} color="#000" />
+                          <View className="flex-row items-baseline">
+                            <Text className="text-3xl font-JakartaBold">
+                              {potentialScores[category]}
+                            </Text>
+                            <Text className="text-lg font-JakartaMedium text-green-500 ml-2">
+                              +{potentialScores[category] - data.rating}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text className="font-JakartaMedium mb-2 capitalize">
+                          {category}
+                        </Text>
+                        <CustomProgressBar
+                          progress={data.rating}
+                          potentialProgress={potentialScores[category]}
+                        />
+                      </View>
+                    </View>
+                  );
+                }
+              )}
+            </View>
+
+            {/* <Text className="text-lg font-JakartaMedium mt-6 mb-2">
+              Unlock Your Full Potential
+            </Text>
+            <Text className="text-base font-JakartaRegular">
+              With dedicated practice and our personalized guidance, you can
+              reach these potential scores and beyond!
+            </Text> */}
+          </ScrollView>
+
+          <View className="px-5 pb-5">
+            <CustomButton
+              title="Unlock my potential"
+              onPress={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
+              className="w-full mt-5"
+            />
+          </View>
+        </SafeAreaView>
+      );
+    }
+
+    return (
+      <SafeAreaView className="flex-1 bg-gradient-to-b from-white to-gray-100">
+        <ScrollView className="flex-1 px-5 py-10">
+          <Text className="text-2xl font-JakartaBold mb-4">
+            {currentQuestion.title}
+          </Text>
+
+          <Text className="text-lg font-JakartaRegular text-black leading-relaxed pb-3">
+            Based on your response, we've analyzed your aura ratings, which
+            reflects your current lifestyle and habits.
+          </Text>
+
+          {/* <View className="bg-white rounded-3xl p-6 mb-8 ">
+            <Text className="text-3xl font-JakartaBold mb-4 text-black">
+              {auraAnalysis.auraType.type}
+            </Text>
+            <Text className="text-lg font-JakartaRegular text-black leading-relaxed">
+              {auraAnalysis.auraType.explanation}
+            </Text>
+          </View> */}
+
+          <View className="flex-row flex-wrap">
+            {Object.entries(auraAnalysis.categories).map(
+              ([category, data], index) => {
+                let iconName;
+                switch (category) {
+                  case "posture":
+                    iconName = "body-outline";
+                    break;
+                  case "communication":
+                    iconName = "chatbubbles-outline";
+                    break;
+                  case "style":
+                    iconName = "shirt-outline";
+                    break;
+                  case "wellness":
+                    iconName = "fitness-outline";
+                    break;
+                  case "creativity":
+                    iconName = "color-palette-outline";
+                    break;
+                  default:
+                    iconName = "star-outline";
+                }
+                return (
+                  <View key={category} className="w-1/2 p-2">
+                    <View
+                      className="bg-white bg-opacity-50 rounded-lg p-5 shadow-sm"
+                      style={{
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <View className="flex-row space-x-3 items-center mb-2">
+                        <Ionicons name={iconName} size={24} color="#000" />
+                        <Text className="text-3xl font-JakartaBold">
+                          {data.rating}
+                        </Text>
+                      </View>
+                      <Text className="font-JakartaMedium mb-2 capitalize">
+                        {category}
+                      </Text>
+                      <CustomProgressBar progress={data.rating} />
+                      <Text
+                        className="text-sm font-JakartaRegular mt-2 h-20 overflow-hidden"
+                        numberOfLines={3}
+                        ellipsizeMode="tail"
+                      >
+                        {data.explanation}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              }
+            )}
+          </View>
+
+          {/* <Text className="text-lg font-JakartaMedium mt-6 mb-2">
+            Overall Summary
+          </Text>
+          <Text className="text-base font-JakartaRegular">
+            {auraAnalysis.overallSummary}
+          </Text> */}
+        </ScrollView>
+
+        <View className="px-5 pb-5">
+          <CustomButton
+            title="View my potential"
+            onPress={generatePotentialScores}
+            className="w-full mt-5"
+          />
+        </View>
       </SafeAreaView>
     );
   }

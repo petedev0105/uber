@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { LinearGradient } from "expo-linear-gradient";
+import { useUser } from "@clerk/clerk-expo";
+import AuraTaskModal from "./AuraTaskModal"; // Import the new component
+import { useAuraTasksStore } from "@/store/auraTasksStore";
 
 const mockDailyTasks = [
   {
@@ -67,82 +77,33 @@ const TaskCard = ({ task, onPress }) => (
   </TouchableOpacity>
 );
 
-const TaskDetailModal = ({ task, visible, onClose, onMarkAsDone }) => {
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <TouchableOpacity
-        style={{
-          flex: 1,
-          justifyContent: "flex-end",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        }}
-        activeOpacity={1}
-        onPress={onClose}
-      >
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <View className="bg-white p-6 rounded-t-3xl">
-            <Text className="text-black text-2xl font-bold mb-2">
-              {task.title}
-            </Text>
-            <Text className="text-blue-500 font-bold mb-4 text-lg">
-              +{task.points} Aura Points
-            </Text>
-            <Text className="text-black text-lg mb-4">{task.description}</Text>
-            <View className="flex-row items-center justify-between mb-6">
-              <Text className="text-black text-lg font-bold">
-                Mark as done:
-              </Text>
-              {!showConfirm ? (
-                <TouchableOpacity
-                  onPress={() => setShowConfirm(true)}
-                  className="w-6 h-6 border-2 border-blue-500 rounded-md flex items-center justify-center"
-                >
-                  {task.isDone && (
-                    <Ionicons name="checkmark" size={18} color="#3B82F6" />
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={onMarkAsDone}
-                  className="bg-blue-500 py-2 px-4 rounded-full"
-                >
-                  <Text className="text-white font-bold">Confirm</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-            <TouchableOpacity
-              className="bg-blue-500 py-3 px-6 rounded-full"
-              onPress={onClose}
-            >
-              <Text className="text-white text-center font-bold">Close</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Modal>
-  );
-};
-
 const DailyAuraTasks = () => {
-  const [tasks, setTasks] = useState(mockDailyTasks);
+  const { user } = useUser(); // Get user object
+  const userId = user?.id; // Extract userId from user object
+  const { tasks, setTasks } = useAuraTasksStore(); // Use the store
   const [completedTasks, setCompletedTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // In a real app, you'd fetch the daily tasks here
-    setTasks(mockDailyTasks);
-  }, []);
+  // useEffect(() => {
+  //   const fetchTasks = async () => {
+  //     if (!userId) return; // Ensure userId is available
+  //     try {
+  //       const response = await fetch(`/(api)/get-tasks/${userId}`);
+  //       const data = await response.json();
+  //       const incompleteTasks = data.data.filter((task) => !task.is_completed); // Filter out completed tasks
+  //       console.log("incomplete tasks:   ", incompleteTasks);
+  //       setTasks(incompleteTasks.slice(0, 5)); // Get only the first 5 incomplete tasks
+  //     } catch (error) {
+  //       console.error("Error fetching tasks:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchTasks();
+  // }, [userId]);
 
   const handleCompleteTask = (taskId) => {
     const task = tasks.find((t) => t.id === taskId);
@@ -155,11 +116,18 @@ const DailyAuraTasks = () => {
 
   const progress = tasks.length > 0 ? completedTasks.length / tasks.length : 0;
 
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center mt-10">
+        <ActivityIndicator size="large" color="#3B82F6" />
+        <Text>Loading tasks...</Text>
+      </View>
+    );
+  }
+
   return (
     <View className="mt-5">
-      <Text className="px-5 text-xl font-bold my-4">
-        Daily Aura Tasks ({mockDailyTasks.length})
-      </Text>
+      <Text className="px-5 text-xl font-bold my-4">Daily Aura Tasks</Text>
 
       {/* <View className="rounded-xl  mb-5 shadow-sm">
         <View className="flex-row justify-between items-center mb-2">
@@ -185,22 +153,25 @@ const DailyAuraTasks = () => {
           className="px-5"
           // contentContainerStyle={{ paddingRight: 20, paddingLeft: 20 }}
         >
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onPress={() => setSelectedTask(task)}
-            />
-          ))}
+          {tasks &&
+            tasks
+              .slice(0, 5)
+              .map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onPress={() => setSelectedTask(task)}
+                />
+              ))}
         </ScrollView>
       </View>
       {/* </ScrollView> */}
       {selectedTask && (
-        <TaskDetailModal
+        <AuraTaskModal
           task={selectedTask}
           visible={!!selectedTask}
           onClose={() => setSelectedTask(null)}
-          onMarkAsDone={() => handleCompleteTask(selectedTask.id)}
+          // onMarkAsDone={() => handleCompleteTask(selectedTask.id)}
         />
       )}
     </View>
